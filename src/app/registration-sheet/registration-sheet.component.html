@@ -1,0 +1,9 @@
+<h2>Please enter your name!</h2>
+
+<form (submit)="submit()">
+    <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input type="text" matInput [formControl]="nameControl">
+    </mat-form-field>
+    <button mat-raised-button type="submit">Submit</button>
+</form>
