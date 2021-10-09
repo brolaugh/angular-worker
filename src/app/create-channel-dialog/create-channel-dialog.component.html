@@ -1,0 +1,7 @@
+<form (submit)="submit()">
+    <mat-form-field>
+        <mat-label>Channel name</mat-label>
+        <input type="text" matInput [formControl]="channelNameControl" placeholder="Enter channel name...">
+    </mat-form-field>
+    <button mat-raised-button type="submit">Create channel</button>
+</form>

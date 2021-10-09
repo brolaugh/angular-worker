@@ -1,86 +1,40 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { RegistrationSheetComponent } from './registration-sheet/registration-sheet.component';
+import { ChangeDetectorRef, Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { Channel, ChatService } from './chat.service';
+import { CreateChannelDialogComponent } from './create-channel-dialog/create-channel-dialog.component';
+import { User, UserService } from './user.service';
 
-export interface Message {
-  body: string;
-  sender: string;
-  // id: string;
-  creationTime: string; // iso date string
-  origin: 'client' | 'server';
-}
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
-  public messages: Message[] = [];
-  public user: {name: string} | undefined = undefined;
-
-  public messageBox = new FormControl('', [Validators.required]);
-  private sharedWorker!: SharedWorker;
-  private sessionStorage: Storage;
+export class AppComponent{
+  public user$: Observable<User | undefined>;
 
   constructor(
-    private changeDetector: ChangeDetectorRef, 
-    private bottomSheet: MatBottomSheet
+    private matDialog: MatDialog,
+    public chatService: ChatService,
+    userService: UserService,
+    changeDetector: ChangeDetectorRef,
   ){
-    this.sessionStorage = window.sessionStorage;
+      this.user$ = userService.user$;
+      this.chatService.channelCreated$.pipe(
+        delay(0)
+      ).subscribe(() => changeDetector.detectChanges());
   }
 
-  ngOnInit(){
-    this.sharedWorker = new SharedWorker('/assets/shared-worker.js');
-
-    this.sharedWorker.port.onmessage = (message: MessageEvent<Message>) => {
-      this.messages = this.messages.filter(m => !(m.body === message.data.body && m.creationTime === message.data.creationTime));
-      this.messages.push({... message.data, origin: 'server'});
-      this.changeDetector.detectChanges();
-    };
-
-    this.sharedWorker.port.start();
-
-    const userCandidate = this.sessionStorage.getItem('user');
-    if(userCandidate){
-      this.user = JSON.parse(userCandidate);
-    }else{
-      this.openBottomSheet();
-    }
-  }
-
-  openBottomSheet(): void {
-    const a = this.bottomSheet.open(RegistrationSheetComponent, {
-      disableClose: !!this.user,
-      data: this.user
+  public createNewChannel(){
+    const dialogReference = this.matDialog.open(CreateChannelDialogComponent);
+    dialogReference.afterClosed().subscribe((channelName: string | undefined) => {
+      if(channelName) this.chatService.createChannel(channelName);
     });
-    a.afterDismissed().subscribe(result => {
-      if(!result){
-        return;
-      }
-      this.user = result;
-      this.sessionStorage.setItem('user', JSON.stringify(this.user));
-    })
   }
 
-  submit(){
-    if(this.messageBox.value === '' || this.user === undefined){
-      return;
-    }
-
-    const message: Message = {
-      body: this.messageBox.value, 
-      sender: this.user?.name,  
-      origin: 'client',
-      creationTime: new Date().toISOString(),
-    };
-    this.messageBox.setValue('');
-    this.sharedWorker.port.postMessage(message);
-    this.messages.push(message);
-  }
-
-  trackMessageById(_: number, message: Message): string {
-    return message.creationTime + message.body;
+  public trackByChannelName(_: number, channel: Channel){
+    return channel.name;
   }
 }

@@ -8,7 +8,7 @@ Run the following commands in parallel
 
  * `ng build --watch`
  * `npx http-server -p 4200 dist/angular-worker`
- * `ts-node backend/backend.ts` 
+ * `nodemon backend/backend.ts` 
  
  Navigate to `http://localhost:4200/`. The app will NOT reload automatically on file changes. If you're planning on making changes, always check them out in incognito because otherwise your browser will cache the living shit out of your shared worker... also when you do make changes close all incognito tabs before checking out the changes.
 

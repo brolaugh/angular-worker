@@ -1,0 +1,18 @@
+<div>
+    <mat-card
+      *ngFor="let message of (channel.messages$ | async); trackBy: trackMessageById" 
+      [class.message-confirmed]="message.origin === 'server'"
+      [class.message-unconfirmed]="message.origin === 'client'"
+      [class.message-self]="user?.name === message.sender"
+      [class.message-other]="user?.name !== message.sender"
+      >
+      <mat-card-content>{{ message.body }}</mat-card-content>
+      <mat-card-footer>{{ message.sender }}</mat-card-footer>
+  </mat-card>
+  </div>
+  
+  <form (submit)="submit()">
+    <mat-form-field appearance="fill">
+      <input matInput placeholder="Write something..." [formControl]="messageBox">
+    </mat-form-field>
+  </form>

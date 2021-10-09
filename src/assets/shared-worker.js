@@ -3,7 +3,17 @@
 const connections = [];
 let webSocket = undefined
 
-
+function getWelcomeMessage(){
+  return {
+    type: 'message',
+    content: {
+      body: 'Welcome to worker chat v6',
+      sender: 'System',
+      channel: 'main',
+      creationTime: new Date().toISOString(),
+    }
+  }
+}
 function websocketConnect(){
   webSocket = new WebSocket("ws://localhost:3000");
 
@@ -25,17 +35,20 @@ self.onconnect = connectEvent => {
 
   port.start();
   connections.push(port);
-  port.postMessage({
-    body: 'You may write here v5',
-    sender: 'System',
-    creationTime: new Date().toISOString(),
-  });
+  port.postMessage(getWelcomeMessage());
+
   const broadcastToTabs = message => {
     connections.forEach(connection => connection.postMessage(message));
   }
-
-  port.onmessage = messageEvent => webSocket.send(JSON.stringify(messageEvent.data));
-  webSocket.onmessage = messageEvent => broadcastToTabs(JSON.parse(messageEvent.data))
+  port.onmessage = messageEvent => {
+    console.log('From client', messageEvent.data);
+    webSocket.send(JSON.stringify(messageEvent.data));
+    broadcastToTabs(messageEvent.data);
+  }
+  webSocket.onmessage = messageEvent => {
+    console.log('from ws', messageEvent.data);
+    broadcastToTabs(JSON.parse(messageEvent.data));
+  }
 };
 
 

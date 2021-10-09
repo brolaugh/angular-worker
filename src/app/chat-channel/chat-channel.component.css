@@ -1,0 +1,22 @@
+
+.message-confirmed{
+    color: black;
+}
+.message-self{
+    text-align: right;
+    background-color: aliceblue;
+}
+.message-other{
+    text-align: left;
+    background-color: darkorchid;
+}
+.message-unconfirmed{
+    color: gray;
+    background-color: orange;
+}
+mat-card{
+    margin-top: 10px;
+}
+mat-card-content{
+    font-size: 2em;
+}
