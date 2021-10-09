@@ -9,13 +9,13 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class CreateChannelDialogComponent{
 
-  channelNameControl = new FormControl('', Validators.required);
+  channelNameControl = new FormControl('', [Validators.required, Validators.minLength(4)]);
 
   constructor(private dialogRef: MatDialogRef<CreateChannelDialogComponent>) { 
   }
 
   submit(){
-    if(!this.channelNameControl.value){
+    if(this.channelNameControl.invalid){
       return;
     }
     this.dialogRef.close(this.channelNameControl.value);

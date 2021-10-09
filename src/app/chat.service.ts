@@ -58,7 +58,7 @@ export class ChatService {
   private sendMessage(channel: string, body: string){
     this.userService.user$.pipe(
       take(1),
-      filter(val => !!val)
+      filter(val => !!val?.name)
     ).subscribe(user => {
     const message: WebsocketChatMessage = {
       type: 'message',

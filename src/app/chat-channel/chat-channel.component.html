@@ -1,18 +1,19 @@
-<div>
-    <mat-card
-      *ngFor="let message of (channel.messages$ | async); trackBy: trackMessageById" 
-      [class.message-confirmed]="message.origin === 'server'"
-      [class.message-unconfirmed]="message.origin === 'client'"
-      [class.message-self]="user?.name === message.sender"
-      [class.message-other]="user?.name !== message.sender"
-      >
-      <mat-card-content>{{ message.body }}</mat-card-content>
-      <mat-card-footer>{{ message.sender }}</mat-card-footer>
+
+<div class="chat-container">
+  <mat-card
+    *ngFor="let message of (channel.messages$ | async)?.slice()?.reverse(); trackBy: trackMessageById" 
+    [class.message-confirmed]="message.origin === 'server'"
+    [class.message-unconfirmed]="message.origin === 'client'"
+    [class.message-self]="user.name === message.sender"
+    [class.message-other]="user.name !== message.sender"
+    >
+    <mat-card-content>{{ message.body }}</mat-card-content>
+    <mat-card-footer>{{ message.sender }}</mat-card-footer>
   </mat-card>
-  </div>
-  
-  <form (submit)="submit()">
-    <mat-form-field appearance="fill">
-      <input matInput placeholder="Write something..." [formControl]="messageBox">
-    </mat-form-field>
-  </form>
+</div>
+<form (submit)="submit()" class="fixed-bottom">
+  <mat-form-field appearance="fill" class="col-md-11">
+    <input matInput placeholder="Write something..." [formControl]="messageBox">
+  </mat-form-field>
+  <button mat-raised-button class="col-md-1" type="submit">Send</button>
+</form>

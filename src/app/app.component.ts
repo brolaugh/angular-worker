@@ -14,7 +14,7 @@ import { User, UserService } from './user.service';
 })
 export class AppComponent{
   public user$: Observable<User | undefined>;
-
+  public selectedChatTabIndex: number = 0;
   constructor(
     private matDialog: MatDialog,
     public chatService: ChatService,
@@ -30,7 +30,13 @@ export class AppComponent{
   public createNewChannel(){
     const dialogReference = this.matDialog.open(CreateChannelDialogComponent);
     dialogReference.afterClosed().subscribe((channelName: string | undefined) => {
-      if(channelName) this.chatService.createChannel(channelName);
+      if(!channelName){
+        return;
+      }
+      if(channelName && !this.chatService.channels.find(c => c.name === channelName)) {
+        this.chatService.createChannel(channelName);
+      }
+      this.selectedChatTabIndex = this.chatService.channels.findIndex(c => c.name === channelName);
     });
   }
 

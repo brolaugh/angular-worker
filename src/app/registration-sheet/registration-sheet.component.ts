@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { User } from '../user.service';
 
@@ -9,7 +9,7 @@ import { User } from '../user.service';
   styleUrls: ['./registration-sheet.component.css']
 })
 export class RegistrationSheetComponent{
-  public nameControl = new FormControl('');
+  public nameControl = new FormControl('', [Validators.required, Validators.minLength(4)]);
 
   constructor(
     private _bottomSheetRef: MatBottomSheetRef<RegistrationSheetComponent>,
@@ -20,7 +20,7 @@ export class RegistrationSheetComponent{
   }
 
   submit(){
-    if(this.nameControl.value === ''){
+    if(this.nameControl.invalid){
       return;
     }
     this._bottomSheetRef.dismiss({name: this.nameControl.value});

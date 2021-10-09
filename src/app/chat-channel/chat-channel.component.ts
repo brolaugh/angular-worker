@@ -16,7 +16,7 @@ export class ChatChannelComponent {
   @Input()
   public user!: User;
 
-  public messageBox = new FormControl('', [Validators.required]);
+  public messageBox = new FormControl('', [Validators.required, Validators.minLength(1)]);
 
   constructor(
     private changeDetector: ChangeDetectorRef,
@@ -30,7 +30,7 @@ export class ChatChannelComponent {
   }
 
   submit(){
-    if(this.messageBox.value === ''){
+    if(this.messageBox.invalid){
       return;
     }
     this.channel.sendMessage(this.messageBox.value);

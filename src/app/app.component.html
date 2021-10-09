@@ -5,7 +5,7 @@
   </button>
 </mat-toolbar>
 
-<mat-tab-group *ngIf="(user$ | async) as user">
+<mat-tab-group *ngIf="(user$ | async) as user" [(selectedIndex)]="selectedChatTabIndex">
   <mat-tab *ngFor="let channel of chatService.channels; trackBy: trackByChannelName" [label]="channel.name">
     <app-chat-channel [channel]="channel" [user]="user"></app-chat-channel>
   </mat-tab>

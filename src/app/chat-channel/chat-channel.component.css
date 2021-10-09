@@ -14,9 +14,21 @@
     color: gray;
     background-color: orange;
 }
+
+.chat-container{
+    height: calc(100vh - (64px + 48px + 72px));
+    overflow: scroll;
+    transform: rotate(180deg);
+    direction: rtl;
+}
 mat-card{
     margin-top: 10px;
+    transform: rotate(180deg);
+    direction: ltr;
 }
 mat-card-content{
     font-size: 2em;
+}
+mat-form {
+    width: 100%;
 }
